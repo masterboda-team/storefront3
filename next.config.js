@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const config = {
+	crossOrigin: "anonymous",
 	images: {
 		remotePatterns: [
 			{
@@ -15,8 +16,12 @@ const config = {
 		process.env.NEXT_OUTPUT === "standalone"
 			? "standalone"
 			: process.env.NEXT_OUTPUT === "export"
-			  ? "export"
-			  : undefined,
+				? "export"
+				: undefined,
+	env: {
+		NEXT_FILEPRINT_URL: process.env.NEXT_FILEPRINT_URL,
+		NEXT_FILEPRINT_MEDIA_URL: process.env.NEXT_FILEPRINT_MEDIA_URL,
+	},
 };
 
 export default config;

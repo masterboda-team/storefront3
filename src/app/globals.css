@@ -5,3 +5,31 @@
 body {
 	overflow-x: hidden;
 }
+
+.page-color-indicator:before {
+	position: absolute;
+	display: block;
+	content: "";
+	left: 20px;
+	bottom: 20px;
+	width: 25px;
+	height: 25px;
+	box-shadow: 0 0 10px #aaa;
+	border-radius: 50%;
+	background: #40e0d0;
+	background: linear-gradient(to right, #ff0080, #ff8c00, #40e0d0);
+}
+
+.grayscale {
+	position: absolute;
+	display: block;
+	content: "";
+	left: 20px;
+	bottom: 20px;
+	width: 25px;
+	height: 25px;
+	box-shadow: 0 0 10px #aaa;
+	border-radius: 50%;
+	background: #40e0d0;
+	background: linear-gradient(to right, #ff0080, #ff8c00, #40e0d0);
+}

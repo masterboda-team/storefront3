@@ -2,6 +2,15 @@ import Link from "next/link";
 import { NavLink } from "./NavLink";
 import { executeGraphQL } from "@/lib/graphql";
 import { MenuGetBySlugDocument } from "@/gql/graphql";
+import { NavDropdown } from "@/fileprint/components/MenuDropdown/NavDropdown";
+
+const STAMPA_NAV_LINKS = [
+	{
+		id: "thesis",
+		name: "Tesi",
+		url: "/thesis",
+	},
+];
 
 export const NavLinks = async ({ channel }: { channel: string }) => {
 	const navLinks = await executeGraphQL(MenuGetBySlugDocument, {
@@ -43,6 +52,7 @@ export const NavLinks = async ({ channel }: { channel: string }) => {
 				}
 				return null;
 			})}
+			<NavDropdown items={STAMPA_NAV_LINKS} name="Stampa" />
 		</>
 	);
 };

@@ -55,6 +55,12 @@ const useDummyDropIn = (props: DummyDropinProps) => {
 			checkoutId: checkout.id,
 			paymentGateway: {
 				id: props.config.id,
+				data: {
+					event: {
+						includePspReference: true,
+						type: "CHARGE_SUCCESS",
+					},
+				},
 			},
 		});
 	};

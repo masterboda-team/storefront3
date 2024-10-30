@@ -10,4 +10,10 @@ fragment VariantDetails on ProductVariant {
 			}
 		}
 	}
+	media {
+		id
+		type
+		alt
+		url
+	}
 }
