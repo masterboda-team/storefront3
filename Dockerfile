@@ -10,7 +10,7 @@ WORKDIR /app
 RUN export PNPM_VERSION=$(cat package.json | jq '.engines.pnpm' | sed -E 's/[^0-9.]//g')
 
 COPY package.json pnpm-lock.yaml ./
-RUN yarn global add pnpm@$PNPM_VERSION
+RUN npm install -g pnpm@$PNPM_VERSION
 RUN pnpm i --frozen-lockfile --prefer-offline
 
 # Rebuild the source code only when needed
@@ -29,10 +29,14 @@ ARG NEXT_PUBLIC_SALEOR_API_URL
 ENV NEXT_PUBLIC_SALEOR_API_URL=${NEXT_PUBLIC_SALEOR_API_URL}
 ARG NEXT_PUBLIC_STOREFRONT_URL
 ENV NEXT_PUBLIC_STOREFRONT_URL=${NEXT_PUBLIC_STOREFRONT_URL}
+ARG NEXT_FILEPRINT_URL
+ENV NEXT_FILEPRINT_URL=${NEXT_FILEPRINT_URL}
+ARG NEXT_MEDIA_URL
+ENV NEXT_MEDIA_URL=${NEXT_MEDIA_URL}
 
 # Get PNPM version from package.json
 RUN export PNPM_VERSION=$(cat package.json | jq '.engines.pnpm' | sed -E 's/[^0-9.]//g')
-RUN yarn global add pnpm@$PNPM_VERSION
+RUN npm install -g pnpm@$PNPM_VERSION
 
 RUN pnpm build
 
@@ -48,6 +52,10 @@ ARG NEXT_PUBLIC_SALEOR_API_URL
 ENV NEXT_PUBLIC_SALEOR_API_URL=${NEXT_PUBLIC_SALEOR_API_URL}
 ARG NEXT_PUBLIC_STOREFRONT_URL
 ENV NEXT_PUBLIC_STOREFRONT_URL=${NEXT_PUBLIC_STOREFRONT_URL}
+# ARG NEXT_FILEPRINT_URL
+# ENV NEXT_FILEPRINT_URL=${NEXT_FILEPRINT_URL}
+# ARG NEXT_MEDIA_URL
+# ENV NEXT_MEDIA_URL=${NEXT_MEDIA_URL}
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs

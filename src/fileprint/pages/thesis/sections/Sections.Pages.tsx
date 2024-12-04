@@ -100,7 +100,7 @@ function PageList({ uploadedFile, coloredPages, setColoredPages }: PageListProps
 			<div key={uploadedFile.hash + index} className="relative border-2">
 				<img
 					className="h-auto w-56 cursor-pointer"
-					src={`${process.env.NEXT_FILEPRINT_MEDIA_URL}/${uploadedFile.hash}/${index + 1}.png`}
+					src={`${process.env.NEXT_MEDIA_URL}/${uploadedFile.hash}/${index + 1}.png`}
 					alt="page"
 				/>
 				<button

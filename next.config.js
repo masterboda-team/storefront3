@@ -20,7 +20,7 @@ const config = {
 				: undefined,
 	env: {
 		NEXT_FILEPRINT_URL: process.env.NEXT_FILEPRINT_URL,
-		NEXT_FILEPRINT_MEDIA_URL: process.env.NEXT_FILEPRINT_MEDIA_URL,
+		NEXT_MEDIA_URL: process.env.NEXT_MEDIA_URL,
 	},
 };
 
