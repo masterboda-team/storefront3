@@ -2,13 +2,13 @@
 import { useEffect, useState } from "react";
 import { Choose, When } from "../../components/wrappers";
 import { OrderProgress } from "../../components/OrderProgress/OrderProgress";
-import { type UploadedFile, type UploadResult } from "../../types";
+import type { PdfVariant, UploadResult } from "../../types";
 import { useFetchPdf } from "../../hooks/useFetchPdf";
 import { Sections } from "./sections/Sections";
 import { Loader } from "@/ui/atoms/Loader";
-import type { FoundProductFragment, FoundVariantFragment } from "@/gql/graphql";
+import type { FoundProductFragment } from "@/gql/graphql";
 import { useGetPrintProduct } from "@/fileprint/hooks/useGetPrintProduct";
-import { useAddToCheckout } from "@/fileprint/hooks/useAddToCheckout";
+import { type AddPdfToCheckoutInput, useAddToCheckout } from "@/fileprint/hooks/useAddToCheckout";
 
 interface FilePrintPageProps {
 	channel: string;
@@ -19,18 +19,22 @@ interface FilePrintPageProps {
 type PageState = {
 	stage: 1 | 2 | 3;
 	isLoading: boolean;
-	uploadResult: UploadResult | null;
-	coverVariant: FoundVariantFragment | null;
-	coverTextColor: string | null;
+	coverUrl: string | null;
+	checkoutInput: AddPdfToCheckoutInput;
 };
 
 export function FilePrintPage({ channel, getCheckout, revalidateCart }: FilePrintPageProps) {
 	const [state, setState] = useState<PageState>({
 		stage: 1,
 		isLoading: false,
-		uploadResult: null,
-		coverVariant: null,
-		coverTextColor: null,
+		coverUrl: null,
+		checkoutInput: {
+			channel,
+			checkoutId: "",
+			slug: "",
+			hash: "",
+			variants: [],
+		},
 	});
 	const [fetchPdf, { data: fetchPdfData, isLoading: fetchPdfLoading }] = useFetchPdf();
 	const [
@@ -57,31 +61,35 @@ export function FilePrintPage({ channel, getCheckout, revalidateCart }: FilePrin
 		fetchPdf(uploadResult.hash);
 		setState({
 			...state,
-			uploadResult,
 			isLoading: false,
 			stage: 2,
+			coverUrl: uploadResult.coverUrl,
+			checkoutInput: {
+				...state.checkoutInput,
+				hash: uploadResult.hash,
+			},
 		});
 	};
 
-	const onCoverSuccess = (value: { coverVariant: FoundVariantFragment; coverTextColor: string }) => {
+	const onCoverSuccess = (variants: PdfVariant[]) => {
 		setState({
 			...state,
-			...value,
 			stage: 3,
+			checkoutInput: {
+				...state.checkoutInput,
+				variants,
+			},
 		});
 	};
 
-	const onOrderSuccess = async (args: { coloredPages: number[]; quantity: number }) => {
+	const toCart = async (variants: PdfVariant[]) => {
 		const checkoutId = await getCheckout();
 
-		const input = {
-			hash: state.uploadResult?.hash || "",
-			slug: printProduct?.slug || "",
+		const input: AddPdfToCheckoutInput = {
+			...state.checkoutInput,
 			checkoutId: checkoutId || "",
-			coloredPages: args.coloredPages,
-			coverVariantId: state.coverVariant?.id || "",
-			channel,
-			quantity: args.quantity,
+			slug: printProduct?.slug || "",
+			variants,
 		};
 
 		await addToCheckout(input);
@@ -123,17 +131,22 @@ export function FilePrintPage({ channel, getCheckout, revalidateCart }: FilePrin
 					<When condition={state.stage === 2}>
 						<Sections.Cover
 							product={printProduct?.coverProduct as FoundProductFragment}
-							coverUrl={state.uploadResult?.coverUrl || ""}
+							coverUrl={state.coverUrl || ""}
 							onSuccess={onCoverSuccess}
 						/>
 					</When>
 					<When condition={!!(state.stage === 3)}>
 						<Sections.Pages
-							coverVariant={state.coverVariant as FoundVariantFragment}
-							coloredPageVariant={printProduct?.coloredPageVariant as FoundVariantFragment}
-							grayscalePageVariant={printProduct?.grayscalePageVariant as FoundVariantFragment}
-							uploadedFile={fetchPdfData as UploadedFile}
-							onSuccess={onOrderSuccess}
+							coloredPagePrice={printProduct?.coloredPageVariant?.pricing?.price?.gross?.amount || 0}
+							grayscalePagePrice={printProduct?.grayscalePageVariant?.pricing?.price?.gross?.amount || 0}
+							variants={state.checkoutInput.variants}
+							pageCount={fetchPdfData?.pageCount || 0}
+							hash={state.checkoutInput.hash}
+							coverUrl={state.coverUrl || ""}
+							toCart={toCart}
+							onVariantsChange={(variants) =>
+								setState({ ...state, checkoutInput: { ...state.checkoutInput, variants } })
+							}
 						/>
 					</When>
 				</Choose>

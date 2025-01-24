@@ -1,23 +1,22 @@
 import { useState } from "react";
+import { type PdfVariant } from "../types";
 
-type AddToCheckoutInput = {
-	hash: string;
-	slug: string;
-	checkoutId: string;
-	coloredPages: number[];
-	coverVariantId: string;
+export interface AddPdfToCheckoutInput {
 	channel: string;
-	quantity: number;
-};
+	checkoutId: string;
+	slug: string;
+	hash: string;
+	variants: PdfVariant[];
+}
 
 export const useAddToCheckout = (): [
-	(input: AddToCheckoutInput) => Promise<void>,
+	(input: AddPdfToCheckoutInput) => Promise<void>,
 	{ data: { checkoutId: string } | null; isLoading: boolean },
 ] => {
 	const [data, setData] = useState<{ checkoutId: string } | null>(null);
 	const [isLoading, setIsLoaing] = useState<boolean>(false);
 
-	const mutation = async (input: AddToCheckoutInput): Promise<void> => {
+	const mutation = async (input: AddPdfToCheckoutInput): Promise<void> => {
 		setIsLoaing(true);
 		try {
 			const response = await fetch(`${process.env.NEXT_FILEPRINT_URL}/api/pdf/add-to-checkout`, {

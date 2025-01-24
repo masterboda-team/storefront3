@@ -5,9 +5,10 @@ interface InputNumberProps {
 	onChange: (value: number) => void;
 	min?: number;
 	max?: number;
+	width?: number | string;
 }
 
-export function InputNumber({ value, onChange, min = 1, max }: InputNumberProps) {
+export function InputNumber({ value, onChange, min = 1, max, width = "100%" }: InputNumberProps) {
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const newValue = Number(event.target.value);
 		if (Number.isNaN(newValue)) return;
@@ -27,7 +28,7 @@ export function InputNumber({ value, onChange, min = 1, max }: InputNumberProps)
 	};
 
 	return (
-		<div className="rounded-lg border border-gray-200 bg-white  " data-hs-input-number="">
+		<div className="rounded-lg border border-gray-200 bg-white  " data-hs-input-number="" style={{ width }}>
 			<div className="flex w-full items-center justify-between gap-x-1">
 				<div className="grow px-3 py-2">
 					<input
