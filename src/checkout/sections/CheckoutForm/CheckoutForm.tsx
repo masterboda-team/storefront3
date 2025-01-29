@@ -29,17 +29,17 @@ export const CheckoutForm = () => {
 					<Contact setShowOnlyContact={setShowOnlyContact} />
 				</Suspense>
 				<>
-					{checkout?.isShippingRequired && (
-						<Suspense fallback={<AddressSectionSkeleton />}>
-							<CollapseSection collapse={showOnlyContact}>
-								<Divider />
+					<Suspense fallback={<AddressSectionSkeleton />}>
+						<CollapseSection collapse={showOnlyContact}>
+							<Divider />
+							{checkout?.isShippingRequired && (
 								<div className="py-4" data-testid="shippingAddressSection">
 									{user ? <UserShippingAddressSection /> : <GuestShippingAddressSection />}
 								</div>
-								{user ? <UserBillingAddressSection /> : <GuestBillingAddressSection />}
-							</CollapseSection>
-						</Suspense>
-					)}
+							)}
+							{user ? <UserBillingAddressSection /> : <GuestBillingAddressSection />}
+						</CollapseSection>
+					</Suspense>
 					<Suspense fallback={<DeliveryMethodsSkeleton />}>
 						<DeliveryMethods collapsed={showOnlyContact} />
 					</Suspense>
