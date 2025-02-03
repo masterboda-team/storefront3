@@ -27,7 +27,7 @@ const useDummyDropIn = (props: DummyDropinProps) => {
 		useTransactionInitializeMutation();
 
 	const isLoading = isCompleteCheckoutLoading || isTransactionInitializeLoading;
-	const isValid = !!checkout.shippingAddress && !!checkout.email && !!checkout.billingAddress;
+	const isValid = !!checkout.email && !!checkout.billingAddress;
 
 	const isDisabled = isLoading || !isValid;
 
